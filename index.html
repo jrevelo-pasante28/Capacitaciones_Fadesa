@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Capacitaciones</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <!-- Supabase JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.min.js"></script>
+    <!-- EmailJS -->
+    <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3.2.0/dist/email.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Solicitud de Capacitación</h1>
+        <form id="formulario" autocomplete="off">
+            <label for="nombre">Nombre completo *</label>
+            <input type="text" id="nombre" name="nombre" required placeholder="Tu nombre completo">
+
+            <label for="correo">Correo electrónico *</label>
+            <input type="email" id="correo" name="correo" required placeholder="Tu correo electrónico">
+
+            <label for="referido">¿Quién te refiere? *</label>
+            <input type="text" id="referido" name="referido" required placeholder="Nombre de quien refiere">
+
+
+            <label for="tema">Tema de capacitación *</label>
+            <select id="tema" name="tema" required>
+                <option value="">Cargando temas...</option>
+            </select>
+
+            <label for="fecha">Fecha de capacitación *</label>
+            <input type="date" id="fecha" name="fecha" required min="" max="">
+
+
+                        <div id="loading">Cargando...</div>
+                        <button type="submit">Enviar solicitud</button>
+                        <div id="success">¡Solicitud enviada con éxito!</div>
+                        <script>
+                            // Solo permitir fechas de lunes a viernes
+                            const fechaInput = document.getElementById('fecha');
+                            fechaInput.addEventListener('input', function() {
+                                const day = new Date(this.value).getDay();
+                                if (day === 0 || day === 6) {
+                                    alert('Por favor selecciona un día entre lunes y viernes.');
+                                    this.value = '';
+                                }
+                            });
+                            // Opcional: establecer min y max a hoy y +1 año
+                            const today = new Date();
+                            const yyyy = today.getFullYear();
+                            const mm = String(today.getMonth() + 1).padStart(2, '0');
+                            const dd = String(today.getDate()).padStart(2, '0');
+                            fechaInput.min = `${yyyy}-${mm}-${dd}`;
+                            fechaInput.max = `${yyyy + 1}-${mm}-${dd}`;
+                        </script>
+        </form>
+    </div>
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>
