@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const tema = temaSelect.options[temaSelect.selectedIndex].text;
     const temaId = temaSelect.value;
     const fecha = document.getElementById('fecha').value;
-    const correoGeneral = 'jrevelo@fadesa.com';
+    const listaCorreos = 'jrevelo@fadesa.com,jguacho@fadesa.com,eespinoza@fadesa.com,marguello@fadesa.com,wquimi@fadesa.com,fgomez@fadesa.com';
 
     try {
       const [supabaseRes, emailRes] = await Promise.all([
@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
           fecha
         }),
         enviarEmail({
-          to_email: correoGeneral,
+          to_email: listaCorreos,
           nombre,
           correo,
           referido,
