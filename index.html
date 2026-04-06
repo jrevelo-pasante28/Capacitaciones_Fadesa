@@ -21,13 +21,30 @@
             <input type="email" id="correo" name="correo" required placeholder="Tu correo electrónico">
 
             <label for="referido">¿Quién te refiere? *</label>
-            <input type="text" id="referido" name="referido" required placeholder="Nombre de quien refiere">
+            <input type="text" id="referido" name="referido" required placeholder="Nombre de quien refiere (Empresa)">
 
 
-            <label for="tema">Tema de capacitación *</label>
-            <select id="tema" name="tema" required>
-                <option value="">Cargando temas...</option>
-            </select>
+            <p class="note">Selecciona hasta 3 temas de capacitación. El primer tema es obligatorio, los demás son opcionales.</p>
+            <div id="temas-wrapper">
+                <div class="tema-field">
+                    <label for="tema_1">Tema de capacitación 1 *</label>
+                    <select id="tema_1" name="tema_1" class="tema-select" required>
+                        <option value="">Cargando temas...</option>
+                    </select>
+                </div>
+                <div class="tema-field">
+                    <label for="tema_2">Tema de capacitación 2</label>
+                    <select id="tema_2" name="tema_2" class="tema-select">
+                        <option value="">Cargando temas...</option>
+                    </select>
+                </div>
+                <div class="tema-field">
+                    <label for="tema_3">Tema de capacitación 3</label>
+                    <select id="tema_3" name="tema_3" class="tema-select">
+                        <option value="">Cargando temas...</option>
+                    </select>
+                </div>
+            </div>
 
             <label for="fecha">Fecha de capacitación *</label>
             <input type="date" id="fecha" name="fecha" required min="" max="">
@@ -41,7 +58,7 @@
                             const fechaInput = document.getElementById('fecha');
                             fechaInput.addEventListener('input', function() {
                                 const day = new Date(this.value).getDay();
-                                if (day === 0 || day === 5) {
+                                if (day === 5 || day === 6) {
                                     alert('Por favor selecciona un día entre lunes y viernes.');
                                     this.value = '';
                                 }
