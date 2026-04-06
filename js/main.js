@@ -9,7 +9,6 @@ function initSupabase() {
 document.addEventListener('DOMContentLoaded', () => {
   initSupabase();
   cargarTemas();
-  const temaSelect = document.getElementById('tema');
   const form = document.getElementById('formulario');
   const loading = document.getElementById('loading');
   const success = document.getElementById('success');
@@ -22,10 +21,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const nombre = document.getElementById('nombre').value;
     const correo = document.getElementById('correo').value;
     const referido = document.getElementById('referido').value;
-    const tema = temaSelect.options[temaSelect.selectedIndex].text;
-    const temaId = temaSelect.value;
+    const temaSelects = Array.from(document.querySelectorAll('.tema-select'));
+    const temaSeleccionados = temaSelects
+      .map(select => ({ id: select.value, text: select.options[select.selectedIndex]?.text || '' }))
+      .filter(item => item.id);
+    const tema = temaSeleccionados.map(item => item.text).join(', ');
+    const temaId = temaSeleccionados.map(item => item.id).join(',');
     const fecha = document.getElementById('fecha').value;
     const listaCorreos = 'jrevelo@fadesa.com,jguacho@fadesa.com,eespinoza@fadesa.com,marguello@fadesa.com,wquimi@fadesa.com,fgomez@fadesa.com';
+    
+    const tema_1 = document.getElementById('tema_1').options[document.getElementById('tema_1').selectedIndex]?.text || '';
+    const tema_2 = document.getElementById('tema_2').options[document.getElementById('tema_2').selectedIndex]?.text || '';
+    const tema_3 = document.getElementById('tema_3').options[document.getElementById('tema_3').selectedIndex]?.text || '';
 
     try {
       const [supabaseRes, emailRes] = await Promise.all([
@@ -42,7 +49,9 @@ document.addEventListener('DOMContentLoaded', () => {
           nombre,
           correo,
           referido,
-          tema,
+          tema_1,
+          tema_2,
+          tema_3,
           fecha
         })
       ]);
@@ -66,26 +75,34 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 async function cargarTemas() {
-  const temaSelect = document.getElementById('tema');
+  const temaSelects = Array.from(document.querySelectorAll('.tema-select'));
   const { data, error } = await supabase.from('capacitaciones').select('*');
   console.log('Supabase temas:', data, 'Error:', error);
   if (error) {
-    temaSelect.innerHTML = '<option value="">Error al cargar temas</option>';
+    temaSelects.forEach(select => {
+      select.innerHTML = '<option value="">Error al cargar temas</option>';
+    });
     return;
   }
   if (!data || data.length === 0) {
-    temaSelect.innerHTML = '<option value="">No hay temas disponibles</option>';
+    temaSelects.forEach(select => {
+      select.innerHTML = '<option value="">No hay temas disponibles</option>';
+    });
     return;
   }
-  temaSelect.innerHTML = '<option value="">Seleccione tema</option>';
+  const optionsHtml = ['<option value="">Seleccione tema</option>'];
   data.forEach(tema => {
-    temaSelect.innerHTML += `<option value="${tema.id}">${tema.tema}</option>`;
+    optionsHtml.push(`<option value="${tema.id}">${tema.tema}</option>`);
+  });
+
+  temaSelects.forEach(select => {
+    select.innerHTML = optionsHtml.join('');
   });
 }
 
 function validarFormulario() {
   let valido = true;
-  ['nombre', 'correo', 'referido', 'tema', 'fecha'].forEach(id => {
+  ['nombre', 'correo', 'referido', 'fecha'].forEach(id => {
     const el = document.getElementById(id);
     if (!el.value) {
       el.classList.add('input-error');
@@ -94,6 +111,25 @@ function validarFormulario() {
       el.classList.remove('input-error');
     }
   });
+
+  const temaSelects = Array.from(document.querySelectorAll('.tema-select'));
+  const temasSeleccionados = temaSelects
+    .map(select => select.value)
+    .filter(value => value);
+
+  const uniqueTemas = new Set(temasSeleccionados);
+  if (temasSeleccionados.length === 0) {
+    temaSelects[0].classList.add('input-error');
+    valido = false;
+  } else {
+    temaSelects.forEach(select => select.classList.remove('input-error'));
+  }
+
+  if (uniqueTemas.size < temasSeleccionados.length) {
+    alert('Por favor selecciona temas diferentes en cada campo.');
+    valido = false;
+  }
+
   return valido;
 }
 
